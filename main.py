@@ -8,13 +8,20 @@ import discord
 from discord.ext import commands
 
 #CLASS IMPORT
-from Global import Global
+from Head import Head
+
+#OTHER IMPORT
+sys.path.append('utils')
+from resolver import metaclass_resolver as m_r
 
 #LOAD BOT TOKEN in .env
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-class GlobalEmbed(commands.Bot, Global):
+def metaclass():
+	pass
+
+class HeadEmbed(m_r(commands.Bot, Head)):
 	
 	async def on_ready(self):
 		print("========================================================")
@@ -24,10 +31,8 @@ class GlobalEmbed(commands.Bot, Global):
 		print("\nLogs : ")
 
 	async def on_command_error(self, ctx, error):
-		if isinstance(error, commands.errors.CheckFailure):
-			await ctx.message.delete()
-			new_msg = await ctx.send(GS.error_reinit)
-			await new_msg.delete(delay=10)
+		print(ctx)
+		print(error)
 
 #ALL TEMPLATES IMPORT FUNCTION
 def import_templates(package, recursive=True):
@@ -45,10 +50,10 @@ def import_templates(package, recursive=True):
 #MAIN
 if __name__ == '__main__':
 	#SEND TO DISCORD API WHAT I LOOK = Intents
-	intents = discord.Intents(messages=True, guilds=True, members=True, presences=True, emojis=True, reactions=True)
+	intents = discord.Intents().all()
 
-	#LOAD GlobalEmbed BOT
-	bot = GlobalEmbed(command_prefix='-', intents=intents)
+	#LOAD HeadEmbed BOT
+	bot = HeadEmbed(command_prefix='-', intents=intents)
 
 	#IMPORT ALL TEMPLATES
 	templates = {}
@@ -61,11 +66,11 @@ if __name__ == '__main__':
 		except(AttributeError):
 			pass
 
-	#ADD COMMAND GLOBAL
-	bot.add_cog(Global(bot))
-	Glob = bot.get_cog('Global')
+	#ADD COMMAND Head
+	bot.add_cog(Head(bot))
+	Head = bot.get_cog('Head')
 	print(templates)
-	Glob.set_templates(templates)
+	Head.set_templates(templates)
 
 	#RUN BOT
 	bot.run(TOKEN)
