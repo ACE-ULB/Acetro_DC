@@ -3,6 +3,7 @@ from discord.ext import commands
 
 sys.path.append('visualizer')
 from Reaction import *
+from Message import *
 sys.path.append('controller')
 from Carte_ACE_ctrl import *
 from Global_ctrl import *
@@ -16,6 +17,7 @@ class Events:
 		message = await self.get_message_got_reaction(payload)
 		if (wel_create_pwd in message.content) and (payload.emoji.name == converter_text_to_emojis(txt_ctrl_emojis['valid'])[0]):
 			await self.setup_bdd_pwd(message)
+			return "init_bdd_pwd"
 
 	async def switch_message(self, message):
 		pass
@@ -36,3 +38,5 @@ class Events:
 			else: 
 				print("Out of Range")
 		await bdd_channel.send(data)
+		await echange_emoji_in_msg(message, txt_cmd_emojis['pause'], txt_ctrl_emojis['valid'])
+		await remove_all_reactions
